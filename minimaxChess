@@ -1,0 +1,29 @@
+def minimax(board, depth, maximizingPlayer):
+    if depth == 0 or game_over(board):
+        return evaluate_board(board)
+
+    if maximizingPlayer:
+        bestValue = -float("inf")
+        for move in all_possible_moves(board):
+            newBoard = make_move(board, move)
+            value = minimax(newBoard, depth - 1, False)
+            bestValue = max(bestValue, value)
+        return bestValue
+    else:
+        bestValue = float("inf")
+        for move in all_possible_moves(board):
+            newBoard = make_move(board, move)
+            value = minimax(newBoard, depth - 1, True)
+            bestValue = min(bestValue, value)
+        return bestValue
+
+def evaluate_board(board):
+    # Contar o número de peças de cada tipo no tabuleiro
+    white_pieces = count_pieces(board, "white")
+    black_pieces = count_pieces(board, "black")
+
+    # Diferença entre as peças brancas e as peças pretas
+    piece_difference = white_pieces - black_pieces
+
+    # Adicionar um peso para peças específicas
+    # Por exemplo, damas são mais valiosas
