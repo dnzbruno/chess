@@ -1,0 +1,57 @@
+import chess
+import chess.svg
+
+def avaliar_posicao(tabuleiro):
+    # Implementar lógica de avaliação de posição
+    pass
+
+def minimax(tabuleiro, profundidade, maximizando):
+    if profundidade == 0 or tabuleiro.is_game_over():
+        return avaliar_posicao(tabuleiro)
+
+    if maximizando:
+        melhor_valor = float('-inf')
+        for movimento in tabuleiro.legal_moves:
+            tabuleiro.push(movimento)
+            valor = minimax(tabuleiro, profundidade - 1, False)
+            tabuleiro.pop()
+            melhor_valor = max(melhor_valor, valor)
+        return melhor_valor
+    else:
+        pior_valor = float('inf')
+        for movimento in tabuleiro.legal_moves:
+            tabuleiro.push(movimento)
+            valor = minimax(tabuleiro, profundidade - 1, True)
+            tabuleiro.pop()
+            pior_valor = min(pior_valor, valor)
+        return pior_valor
+
+def escolher_melhor_movimento(tabuleiro, profundidade):
+    melhor_movimento = None
+    melhor_valor = float('-inf')
+
+    for movimento in tabuleiro.legal_moves:
+        tabuleiro.push(movimento)
+        valor = minimax(tabuleiro, profundidade - 1, False)
+        tabuleiro.pop()
+
+        if valor > melhor_valor:
+            melhor_valor = valor
+            melhor_movimento = movimento
+
+    return melhor_movimento
+
+# Exemplo de uso
+tabuleiro = chess.Board()
+
+# Simulação de jogada do jogador
+tabuleiro.push(chess.Move.from_uci("e2e4"))
+
+# Escolher a melhor jogada para as pretas
+melhor_movimento = escolher_melhor_movimento(tabuleiro, profundidade=2)
+
+# Realizar a jogada escolhida
+tabuleiro.push(melhor_movimento)
+
+# Imprimir o tabuleiro em formato SVG (pode ser visualizado em um navegador web)
+print(chess.svg.board(board=tabuleiro))
